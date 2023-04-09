@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ただドラッグアンドドロップするだけ</title>
+    <style>
+
+        body {
+            font-family: sans-serif;
+        }
+
+        #drop-target {
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 15px;
+        }
+
+        .item-container {
+            width: 120px;
+        }
+
+        .drag-item, .dragged-item {
+            padding: 5px;
+            color: black;
+            background: white;
+            font-size: 18px;
+            border: 1px solid gray;
+            width: 100px;
+            height: 30px;
+        }
+
+        .dragged-item {
+            margin: 5px;
+        }
+
+        #container {
+            width: 300px;
+            height: 400px;
+            padding: 5px;
+            border: 2px solid black;
+            overflow: scroll;
+        }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div style="display: flex; flex-direction: row;">
+        <div class="item-container">
+            <div id="item-1" class="drag-item">DropDown</div>
+            <div id="item-2" class="drag-item">Button</div>
+            <div id="item-3" class="drag-item">TextBox</div>
+            <div id="item-4" class="drag-item">TextArea</div>
+        </div>
+        <div id="container"><div id="drop-target"></div></div>
+    </div>
+    <script>
+        const $ = (id) => document.getElementById(id);
+
+        window.addEventListener('load', () => {
+        const draggedItems = document.querySelectorAll('.drag-item');
+        for (const item of draggedItems) {
+            item.draggable = true;
+            item.addEventListener('dragstart', event => {
+                event.dataTransfer.setData("text/html", event.target.id);
+        
+            });
+        }
+
+        $('container').addEventListener('dragover', (event) => {
+            event.preventDefault();
+            event.dataTransfer.effectAllowed = 'copy';
+        });
+
+        $('container').addEventListener('drop', (event) => {
+            let itemId = null;
+            event.preventDefault();
+
+            if (event.dataTransfer.items) {
+                for (const item of event.dataTransfer.items) {
+                    const { kind, type } = item;
+                    if (kind === 'file') {
+                        // ファイルがドロップされた際の処理を書く
+                        ;
+                    } else {
+                        if (type === 'text/html') {
+                            itemId = event.dataTransfer.getData(type);
+                        }
+                    }
+                }
+            }
+            if (itemId !== '') {
+                item = document.createElement('div');
+                item.setAttribute('class', 'dragged-item');
+                item.innerHTML = document.getElementById(itemId).textContent;
+                $('drop-target').appendChild(item);
+            }
+        });
+    });
+    </script>
+</body>
+</html>

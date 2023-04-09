@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .text {
+            margin: 5px;
+        }
+        .list {
+            display: flex;
+            flex-direction: row;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <input type="text" class="text">
+        <div class="list">
+            <textarea></textarea><button id="add">+</button>
+        </div>
+    </div>
+    <script>
+        let i = 0;
+        let current = document.activeElement;
+        
+        current.addEventListener('click', function(e) {
+
+            let current = e.target;
+            let parent = current.parentElement;
+            let grand = parent.parentElement;
+
+            let ele = document.createElement('div');
+            ele.setAttribute('class', 'list');
+                
+            let txt = document.createElement('textarea');
+            let btn = document.createElement('button');
+
+            btn.setAttribute('id', 'add' + i++);
+            btn.innerHTML = '+';
+
+            if (String(current.id).substr(0, 3) === 'add') {
+                ele.appendChild(txt);
+                ele.appendChild(btn);
+                parent.after(ele);
+            
+                txt.focus();
+            }    
+        });
+
+    </script>
+</body>
+</html>
